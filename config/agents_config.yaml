@@ -1,0 +1,261 @@
+# ==============================================================================
+# КОНФИГУРАЦИЯ ПРОЕКТА: Agentic-CoT-SC
+# ==============================================================================
+# Этот файл управляет поведением всех агентов, таймаутами и выбором моделей.
+# Все model_id должны соответствовать слагам на OpenRouter.ai
+# ==============================================================================
+
+# --- 1. Глобальные системные настройки ---
+system:
+  project_name: "All Free models"
+  # API ключ OpenRouter. Можно получить здесь: https://openrouter.ai/keys
+  # ВНИМАНИЕ: Не рекомендуется хранить ключи в конфигах для production.
+  # Используйте .env или переменные окружения для большей безопасности.
+  api_key: "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"
+
+  # Максимальное количество параллельных потоков генерации.
+  # Рекомендуется 3-5 для MVP, 10+ для научных экспериментов (CoT-SC).
+  max_parallel_workers: 10
+
+  # Папка для сохранения результатов (создается автоматически)
+  experiments_dir: "experiments"
+
+  # Уровень логирования (DEBUG, INFO, WARNING, ERROR)
+  log_level: "INFO"
+
+# --- 2. Настройки песочницы (Playwright) ---
+sandbox:
+  # Максимальное время ожидания загрузки страницы и скриптов (мс)
+  timeout_ms: 30000
+  # Режим без графического интерфейса (True для серверов/Docker)
+  headless: true
+  # Разрешение экрана для скриншотов
+  viewport:
+    width: 1280
+    height: 720
+  # Ждать ли полной остановки сетевой активности (важно для CDN библиотек)
+  wait_for_network_idle: true
+  # Качество JPEG скриншота (1-100). 80 - оптимальный баланс качества и размера.
+  screenshot_quality: 80
+
+# --- 3. Генераторы (Workers) ---
+# Список моделей, которые будут параллельно решать задачу.
+# Разнообразие моделей повышает качество (Diversity is key).
+generators:
+  - name: "Kwaipilot: KAT-Coder-Pro V1 (free)"
+    model_id: "kwaipilot/kat-coder-pro:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "TNG: DeepSeek R1T2 Chimera (free)"
+    model_id: "tngtech/deepseek-r1t2-chimera:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Mistral: Devstral 2 2512 (free)"
+    model_id: "mistralai/devstral-2512:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "NVIDIA: Nemotron Nano 12B 2 VL (free)"
+    model_id: "nvidia/nemotron-nano-12b-v2-vl:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "TNG: DeepSeek R1T Chimera (free)"
+    model_id: "tngtech/deepseek-r1t-chimera:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Z.AI: GLM 4.5 Air (free)"
+    model_id: "z-ai/glm-4.5-air:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "TNG: R1T Chimera (free)"
+    model_id: "tngtech/tng-r1t-chimera:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Nex AGI: DeepSeek V3.1 Nex N1 (free)"
+    model_id: "nex-agi/deepseek-v3.1-nex-n1:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Amazon: Nova 2 Lite (free)"
+    model_id: "amazon/nova-2-lite-v1:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "AllenAI: OLMo 3 32B Think (free)"
+    model_id: "allenai/olmo-3-32b-think:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Qwen: Qwen3 Coder (free)"
+    model_id: "qwen/qwen3-coder:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "OpenAI: GPT OSS 20B (free)"
+    model_id: "openai/gpt-oss-20b:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Google: Gemma 3 27B IT (free)"
+    model_id: "google/gemma-3-27b-it:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Meta: Llama 3.3 70B Instruct (free)"
+    model_id: "meta-llama/llama-3.3-70b-instruct:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Qwen: Qwen3 235B A22B (free)"
+    model_id: "qwen/qwen3-235b-a22b:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Google: Gemini 2.0 Flash Exp (free)"
+    model_id: "google/gemini-2.0-flash-exp:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Alibaba: Tongyi DeepResearch 30B A3B (free)"
+    model_id: "alibaba/tongyi-deepresearch-30b-a3b:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Cognitive Computations: Dolphin Mistral 24B Venice Edition (free)"
+    model_id: "cognitivecomputations/dolphin-mistral-24b-venice-edition:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Mistral: Mistral 7B Instruct (free)"
+    model_id: "mistralai/mistral-7b-instruct:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "NVIDIA: Nemotron 3 Nano 30B A3B (free)"
+    model_id: "nvidia/nemotron-3-nano-30b-a3b:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "OpenAI: GPT OSS 120B (free)"
+    model_id: "openai/gpt-oss-120b:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Arcee AI: Trinity Mini (free)"
+    model_id: "arcee-ai/trinity-mini:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "NousResearch: Hermes 3 Llama 3.1 405B (free)"
+    model_id: "nousresearch/hermes-3-llama-3.1-405b:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "NVIDIA: Nemotron Nano 9B V2 (free)"
+    model_id: "nvidia/nemotron-nano-9b-v2:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Mistral: Mistral Small 3.1 24B Instruct (free)"
+    model_id: "mistralai/mistral-small-3.1-24b-instruct:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Moonshot: Kimi K2 (free)"
+    model_id: "moonshotai/kimi-k2:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Meta: Llama 3.2 3B Instruct (free)"
+    model_id: "meta-llama/llama-3.2-3b-instruct:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Qwen: Qwen3 4B (free)"
+    model_id: "qwen/qwen3-4b:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Google: Gemma 3N E2B IT (free)"
+    model_id: "google/gemma-3n-e2b-it:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Google: Gemma 3 12B IT (free)"
+    model_id: "google/gemma-3-12b-it:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Google: Gemma 3N E4B IT (free)"
+    model_id: "google/gemma-3n-e4b-it:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+  - name: "Google: Gemma 3 4B IT (free)"
+    model_id: "google/gemma-3-4b-it:free"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: false
+
+# --- 4. Верификатор (Critic) ---
+# Модель, которая ищет ошибки. Должна быть "умной" и желательно видеть скриншоты.
+verifier:
+  model_id: "openai/gpt-oss-120b"
+  # Чуть выше температура, чтобы модель могла рассуждать и придумывать тест-кейсы
+  temperature: 0.2
+  max_tokens: 16000
+  # Если true, мы будем отправлять скриншот (если он есть) верификатору
+  use_vision_if_available: false
+
+# --- 5. Судья (Global Judge) ---
+# Модель, которая сравнивает все решения и выбирает победителя.
+# Требуется большое контекстное окно и отличное следование инструкциям JSON.
+judge:
+  model_id: "openai/gpt-oss-120b"
+  temperature: 0.0
+  max_tokens: 16000
+
+# --- 6. Синтезатор (Architect) ---
+# Модель, которая пишет финальный код на основе лучшего решения и советов судьи.
+synthesizer:
+  # Если победитель не может быть использован (например, API упал), используем эту модель
+  fallback_model_id: "openai/gpt-oss-120b"
+  temperature: 0.0
+  max_tokens: 32000 # Код может быть большим

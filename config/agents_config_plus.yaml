@@ -1,0 +1,99 @@
+# ==============================================================================
+# КОНФИГУРАЦИЯ ПРОЕКТА: Agentic-CoT-SC
+# ==============================================================================
+# Этот файл управляет поведением всех агентов, таймаутами и выбором моделей.
+# Все model_id должны соответствовать слагам на OpenRouter.ai
+# ==============================================================================
+
+# --- 1. Глобальные системные настройки ---
+system:
+  project_name: "First try"
+  # API ключ OpenRouter. Можно получить здесь: https://openrouter.ai/keys
+  # ВНИМАНИЕ: Не рекомендуется хранить ключи в конфигах для production.
+  # Используйте .env или переменные окружения для большей безопасности.
+  api_key: "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"
+  
+  # Максимальное количество параллельных потоков генерации.
+  # Рекомендуется 3-5 для MVP, 10+ для научных экспериментов (CoT-SC).
+  max_parallel_workers: 10
+
+  # Папка для сохранения результатов (создается автоматически)
+  experiments_dir: "experiments"
+
+  # Уровень логирования (DEBUG, INFO, WARNING, ERROR)
+  log_level: "DEBUG"
+
+# --- 2. Настройки песочницы (Playwright) ---
+sandbox:
+  # Максимальное время ожидания загрузки страницы и скриптов (мс)
+  timeout_ms: 60000
+  # Режим без графического интерфейса (True для серверов/Docker)
+  headless: true
+  # Разрешение экрана для скриншотов
+  viewport:
+    width: 1280
+    height: 720
+  # Ждать ли полной остановки сетевой активности (важно для CDN библиотек)
+  wait_for_network_idle: true
+  # Качество JPEG скриншота (1-100). 80 - оптимальный баланс качества и размера.
+  screenshot_quality: 80
+
+# --- 3. Генераторы (Workers) ---
+# Список моделей, которые будут параллельно решать задачу.
+# Разнообразие моделей повышает качество (Diversity is key).
+generators:
+  - name: "GPT-5.2"
+    model_id: "openai/gpt-5.2"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: true
+
+  - name: "Claude opus 4.5"
+    model_id: "anthropic/claude-opus-4.5"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: true
+
+  - name: "Gemini 3 pro preview"
+    model_id: "google/gemini-3-pro-preview"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: true
+
+  - name: "Grok 4"
+    model_id: "x-ai/grok-4"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: true
+
+  - name: "DeepSeek V3.2"
+    model_id: "deepseek/deepseek-v3.2"
+    temperature: 0.1
+    max_tokens: 16000
+    supports_vision: true
+
+# --- 4. Верификатор (Critic) ---
+# Модель, которая ищет ошибки. Должна быть "умной" и желательно видеть скриншоты.
+verifier:
+  model_id: "google/gemini-3-pro-preview"
+  # Чуть выше температура, чтобы модель могла рассуждать и придумывать тест-кейсы
+  temperature: 0.2
+  max_tokens: 16000
+  # Если true, мы будем отправлять скриншот (если он есть) верификатору
+  use_vision_if_available: true
+
+# --- 5. Судья (Global Judge) ---
+# Модель, которая сравнивает все решения и выбирает победителя.
+# Требуется большое контекстное окно и отличное следование инструкциям JSON.
+judge:
+  model_id: "google/gemini-3-pro-preview"
+  temperature: 0.0
+  max_tokens: 16000
+
+# --- 6. Синтезатор (Architect) ---
+# Модель, которая пишет финальный код на основе лучшего решения и советов судьи.
+synthesizer:
+  # Если победитель не может быть использован (например, API упал), используем эту модель
+  fallback_model_id: "google/gemini-3-pro-preview"
+  temperature: 0.0
+  max_tokens: 32000 # Код может быть большим
